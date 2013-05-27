@@ -37,7 +37,8 @@ describe "Static pages" do
 
 	let (:heading) { 'Help'}
 	let (:page_title) { '' }
-	it_should_behave_like "all static pages"    it { should have_selector('title', text: full_title('Help')) }
+	it_should_behave_like "all static pages"   
+  it { should have_selector('title', text: full_title('Help')) }
   end
 
   describe "About page" do
