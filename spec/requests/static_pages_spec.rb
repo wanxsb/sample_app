@@ -13,23 +13,40 @@ describe "Static pages" do
 
   describe "Home page" do
     before { visit root_path }
-	let (:heading) { 'Sample App'}
-	let (:page_title) { '' }
-	it_should_behave_like "all static pages"
-    it { should_not have_selector 'title', text: '| Home' }
-   	it "should have the right links on the layout" do
-		click_link "About"
-		page.should have_selector 'title', text: full_title('About Us')
-		click_link "Help"
-		page.should # fill in
-		click_link "Contact"
-		page.should # fill in
-		click_link "Home"
-		click_link "Sign up now!"
-		page.should # fill in
-		click_link "sample app"
-		page.should # fill in
-	end
+		let (:heading) { 'Sample App'}
+		let (:page_title) { '' }
+		
+		it_should_behave_like "all static pages"
+		  it { should_not have_selector 'title', text: '| Home' }
+		 	it "should have the right links on the layout" do
+			click_link "About"
+			page.should have_selector 'title', text: full_title('About Us')
+			click_link "Help"
+			page.should # fill in
+			click_link "Contact"
+			page.should # fill in
+			click_link "Home"
+			click_link "Sign up now!"
+			page.should # fill in
+			click_link "sample app"
+			page.should # fill in
+		end
+
+		describe "for signed-in users" do
+      let(:user) { FactoryGirl.create(:user) }
+      before do
+        FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
+        FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
+        sign_in user
+        visit root_path
+      end
+
+      it "should render the user's feed" do
+        user.feed.each do |item|
+          page.should have_selector("li##{item.id}", text: item.content)
+        end
+      end
+    end
   end
 
   describe "Help page" do
